@@ -1,0 +1,5 @@
+tmp/
+venv/
+*.html
+*.xml
+*.png
