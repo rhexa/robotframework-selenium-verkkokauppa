@@ -75,8 +75,38 @@ Open category and page should contain
     ${Pass}=    Run Keyword And Return Status    Landing page element should contain    css:main > header > div    ${Text}
     Run Keyword If    ${Pass} == ${FALSE}    Landing page element should contain    css:main#main div.row h1    ${Text}
 
+Product detail should contain
+    [Arguments]    ${SEARCH_KEYWORD}
+    Click Element    css:#main ol li:nth-child(1) > article > a
+    Wait Until Page Contains Element    css:section.description-container__full-text > div > p
+    Page Should Contain    ${SEARCH_KEYWORD}
+
 Scroll and click element
     [Arguments]    ${Location}
+    ${Timeout}=    Convert Time    1s    timedelta
     Click Element    css:div.sidebar-scroll-buttons--bottom > svg[data-icon='arrow-down']
-    Wait Until Element Is Not Visible   css:div.sidebar-scroll-buttons--bottom > svg[data-icon='arrow-down']
+    Wait Until Element Is Not Visible   css:div.sidebar-scroll-buttons--bottom > svg[data-icon='arrow-down']    ${Timeout}
     Click Element    ${Location}
+
+Search feature should works
+    [Arguments]    ${SEARCH_KEYWORD}
+    Go To    ${URL}
+    Search by keyword    ${SEARCH_KEYWORD}
+    Take product search image
+    Product detail should contain    ${SEARCH_KEYWORD}
+
+Search by keyword
+    [Arguments]    ${SEARCH_KEYWORD}
+    ${SEARCH_INPUT}=    Set Variable    css:input[type='search'][name='query']
+    ${SEARCH_BUTTON}=    Set Variable   css:button[type='submit'][name='submit'] 
+    Input Text    ${SEARCH_INPUT}    ${SEARCH_KEYWORD}
+    Wait Until Page Contains Element    css:nav[aria-labelledby='suggestions-title'] > section.search-input-with-suggestions__products
+    Click Button   ${SEARCH_BUTTON}
+    Wait Until Page Contains Element    css:#main ol li article
+
+Take product search image
+    ${Link}=    Get Element Attribute    css:ol li:nth-child(1) picture img     src
+    @{SplitLink}=    Split String    ${Link}    /
+    Set List Value    ${SplitLink}    5    f=auto
+    ${Link}=    Evaluate    "/".join(${SplitLink})
+    Run And Return Rc And Output    curl -o tmp/product-search-screenshot.png ${Link}
