@@ -10,11 +10,14 @@ ${URL}          https://www.verkkokauppa.com/
 ${BROWSER}      chrome
 ${HEADLESS_BROWSER}   headlesschrome
 ${ENVIRONMENT}    Production
+${PRODUCT_SEARCH_PICTURE}    temp/product-search-screenshot.png
+${PRODUCT_DETAIL_PICTURE}    temp/product-detail-screenshot.png
 
 *** Keywords ***
 Open Home Page
     Run Keyword And Return If    '${ENVIRONMENT}' == 'Development'    Open Development
     Open Production
+    Run Keyword And Ignore Error    Click allow cookies
 
 Open Development
     Open browser    ${URL}   ${BROWSER}
@@ -53,6 +56,10 @@ Categories should have landing Page
         Open category and page should contain    ${CATEGORY}    ${Text}
     END
 
+Click allow cookies
+    Wait Until Page Contains Element    css:#allow-cookies
+    Click Button    css:#allow-cookies
+
 Click hamburger menu
     Wait Until Page Contains Element   css:div.header label > svg[data-icon='bars']
     Click Element    css:div.header label > svg[data-icon='bars']
@@ -66,34 +73,51 @@ Landing page element should contain
     Wait Until Page Contains Element    ${Locator}
     Element Should Contain   ${Locator}     ${Text}
 
+Magick compare images and return distortion
+    [Arguments]    ${picture1}    ${picture2}
+    ${rc}    ${output}=    Run And Return Rc And Output    magick ${picture1} ${picture2} -metric RMSE -compare -format "%[distortion]" info:
+    [Return]    ${output}
+
+Magick compare images and create difference image
+    [Arguments]    ${picture1}    ${picture2}    ${result_picture}
+    ${rc}    ${output}=    Run And Return Rc And Output    magick ${picture1} ${picture2} -metric RMSE -compare ${result_picture}
+    [Return]    ${output}
+
+Goto product detail
+    Run Keyword And Ignore Error    Click allow cookies
+    Click Element    css:#main ol li:nth-child(1) > article > a
 
 Open category and page should contain
     [Arguments]    ${Location}    ${Text}
     ${Pass}=    Run Keyword And Return Status    Click Element    ${Location}
-    Run Keyword If    ${Pass} == ${FALSE}    Wait Until Keyword Succeeds    10    1    Scroll and click element    ${Location}
+    Run Keyword If    ${Pass} == ${FALSE}    Wait Until Keyword Succeeds    10    1    Scroll and click link    ${Location}
     Continue For Loop If    '${Text}' == 'Yritysmyynti'
     ${Pass}=    Run Keyword And Return Status    Landing page element should contain    css:main > header > div    ${Text}
     Run Keyword If    ${Pass} == ${FALSE}    Landing page element should contain    css:main#main div.row h1    ${Text}
 
 Product detail should contain
     [Arguments]    ${SEARCH_KEYWORD}
-    Click Element    css:#main ol li:nth-child(1) > article > a
     Wait Until Page Contains Element    css:section.description-container__full-text > div > p
     Page Should Contain    ${SEARCH_KEYWORD}
 
-Scroll and click element
+Product pictures should match
+    File Should Exist    ${PRODUCT_SEARCH_PICTURE}
+    File Should Exist    ${PRODUCT_DETAIL_PICTURE}
+    ${output}=    Magick compare images and return distortion    ${PRODUCT_SEARCH_PICTURE}    ${PRODUCT_DETAIL_PICTURE}
+
+Scroll and click link
     [Arguments]    ${Location}
-    ${Timeout}=    Convert Time    1s    timedelta
-    Click Element    css:div.sidebar-scroll-buttons--bottom > svg[data-icon='arrow-down']
-    Wait Until Element Is Not Visible   css:div.sidebar-scroll-buttons--bottom > svg[data-icon='arrow-down']    ${Timeout}
-    Click Element    ${Location}
+    Run Keyword And Ignore Error    Click Element    css:div.sidebar-scroll-buttons--bottom > svg[data-icon='arrow-down']
+    Click Link    ${Location}
 
 Search feature should works
     [Arguments]    ${SEARCH_KEYWORD}
     Go To    ${URL}
     Search by keyword    ${SEARCH_KEYWORD}
     Take product search image
+    Goto product detail
     Product detail should contain    ${SEARCH_KEYWORD}
+    Take product detail image
 
 Search by keyword
     [Arguments]    ${SEARCH_KEYWORD}
@@ -109,4 +133,11 @@ Take product search image
     @{SplitLink}=    Split String    ${Link}    /
     Set List Value    ${SplitLink}    5    f=auto
     ${Link}=    Evaluate    "/".join(${SplitLink})
-    Run And Return Rc And Output    curl -o tmp/product-search-screenshot.png ${Link}
+    Run And Return Rc And Output    curl -o ${PRODUCT_SEARCH_PICTURE} ${Link}
+    
+Take product detail image
+    ${Link}=    Get Element Attribute    css:.ratio-carousel > .ratio-carousel__slide:nth-child(1) picture > img     src
+    @{SplitLink}=    Split String    ${Link}    /
+    Set List Value    ${SplitLink}    5    f=auto
+    ${Link}=    Evaluate    "/".join(${SplitLink})
+    Run And Return Rc And Output    curl -o ${PRODUCT_DETAIL_PICTURE} ${Link}
