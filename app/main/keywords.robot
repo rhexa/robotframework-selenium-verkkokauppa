@@ -12,6 +12,7 @@ ${HEADLESS_BROWSER}   headlesschrome
 ${ENVIRONMENT}    Production
 ${PRODUCT_SEARCH_PICTURE}    temp/product-search-screenshot.png
 ${PRODUCT_DETAIL_PICTURE}    temp/product-detail-screenshot.png
+${PRODUCT_DIFFERENCES_PICTURE}    temp/product-differences.png
 
 *** Keywords ***
 Open Home Page
@@ -104,6 +105,9 @@ Product pictures should match
     File Should Exist    ${PRODUCT_SEARCH_PICTURE}
     File Should Exist    ${PRODUCT_DETAIL_PICTURE}
     ${output}=    Magick compare images and return distortion    ${PRODUCT_SEARCH_PICTURE}    ${PRODUCT_DETAIL_PICTURE}
+    ${pass}=    Evaluate    ${output}*100 < 3
+    Run Keyword Unless    ${pass}    Magick compare images and create difference image    ${PRODUCT_SEARCH_PICTURE}    ${PRODUCT_DETAIL_PICTURE}    ${PRODUCT_DIFFERENCES_PICTURE}
+    Should Be True    ${pass}
 
 Scroll and click link
     [Arguments]    ${Location}
