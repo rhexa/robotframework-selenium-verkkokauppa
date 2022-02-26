@@ -30,17 +30,6 @@ Open headless browser
     [Arguments]    ${URL}
     Open Browser    ${URL}    ${HEADLESS_BROWSER}    options=add_argument("--remote-debugging-port=9515");add_argument("--no-sandbox"); add_argument("--disable-dev-shm-usage")
 
-Categories should have icon
-    Click hamburger menu
-    Wait Until Page Contains Element    css:ul.sidebar-category-list > li.sidebar-category-list__link
-    @{LIST_ELEMENT}=    Get WebElements    css:ul.sidebar-category-list > li.sidebar-category-list__link a > span > svg
-    
-    FOR    ${element}    IN    @{LIST_ELEMENT}
-        Page Should Contain Element    ${element}
-    END
-
-    Close hamburger menu
-
 Categories should have landing Page
     Click hamburger menu
     ${CATEGORY_SIZE}=    Get Element Count    css:ul.sidebar-category-list > li.sidebar-category-list__link > a
@@ -69,6 +58,11 @@ Close hamburger menu
     Wait Until Page Contains Element   css:div#sidebar-header-main > label > svg[data-icon='times']
     Click Element    css:div#sidebar-header-main > label > svg[data-icon='times']
 
+Fail on missing icon
+    [Arguments]    ${Locator}
+    ${name}=    Get category text from hamburger menu    ${Locator}
+    Fail    ${name} category is missing an icon
+
 Landing page element should contain
     [Arguments]    ${Locator}    ${Text}
     Wait Until Page Contains Element    ${Locator}
@@ -83,6 +77,12 @@ Magick compare images and create difference image
     [Arguments]    ${picture1}    ${picture2}    ${result_picture}
     ${rc}    ${output}=    Run And Return Rc And Output    magick ${picture1} ${picture2} -metric RMSE -compare ${result_picture}
     [Return]    ${output}
+
+Get category text from hamburger menu
+    [Arguments]    ${Locator}
+    ${element}=    Execute Javascript    return arguments[0].querySelector('a > .category-list-item');    ARGUMENTS    ${Locator}
+    ${text}=    Get Text    ${element}
+    [Return]    ${text}
 
 Goto product detail
     Run Keyword And Ignore Error    Click allow cookies
@@ -145,3 +145,10 @@ Take product detail image
     Set List Value    ${SplitLink}    5    f=auto
     ${Link}=    Evaluate    "/".join(${SplitLink})
     Run And Return Rc And Output    curl -o ${PRODUCT_DETAIL_PICTURE} ${Link}
+
+Verify each category link has icon
+    @{ELEMENTS}=    Get WebElements    css:ul.sidebar-category-list > li.sidebar-category-list__link
+    FOR    ${ELEMENT}    IN    @{ELEMENTS}
+        ${ICON}=    Execute Javascript    return arguments[0].querySelector('a > span > svg');    ARGUMENTS    ${ELEMENT}
+        Run Keyword Unless    ${ICON}    Fail on missing icon    ${ELEMENT}
+    END

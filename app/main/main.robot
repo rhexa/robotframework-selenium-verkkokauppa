@@ -1,12 +1,17 @@
 *** Settings ***
 Resource    keywords.robot
+Suite Setup    Open Home Page
+Suite Teardown    Close Browser
 
 *** Test Cases ***
 Open browser
     Open Home Page
 
-Ensure all product categories have an icon
-    Categories should have icon
+TC_001 Ensure all product categories have an icon
+    Click hamburger menu
+    Wait Until Page Contains Element    css:ul.sidebar-category-list > li.sidebar-category-list__link
+    Verify each category link has icon
+    Close hamburger menu
 
 Ensure all product categories have a landing page
     Categories should have landing Page
