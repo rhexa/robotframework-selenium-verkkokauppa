@@ -30,22 +30,6 @@ Open headless browser
     [Arguments]    ${URL}
     Open Browser    ${URL}    ${HEADLESS_BROWSER}    options=add_argument("--remote-debugging-port=9515");add_argument("--no-sandbox"); add_argument("--disable-dev-shm-usage")
 
-Categories should have landing Page
-    Click hamburger menu
-    ${CATEGORY_SIZE}=    Get Element Count    css:ul.sidebar-category-list > li.sidebar-category-list__link > a
-    Close hamburger menu
-
-    FOR    ${Ind}    IN RANGE   ${CATEGORY_SIZE}
-    # FOR    ${Ind}    IN RANGE   1
-        Click hamburger menu
-        @{CATEGORIES}=    Get WebElements    css:ul.sidebar-category-list > li.sidebar-category-list__link > a
-        @{CATEGORIES_TEXT}=    Get WebElements    css:ul.sidebar-category-list > li.sidebar-category-list__link > a > span.category-list-item
-        ${CATEGORY}=    Get From List    ${CATEGORIES}    ${Ind}
-        ${Text}=    Get Text    ${CATEGORIES_TEXT}[${Ind}]
-
-        Open category and page should contain    ${CATEGORY}    ${Text}
-    END
-
 Click allow cookies
     Wait Until Page Contains Element    css:#allow-cookies
     Click Button    css:#allow-cookies
@@ -60,7 +44,7 @@ Close hamburger menu
 
 Fail on missing icon
     [Arguments]    ${Locator}
-    ${name}=    Get category text from hamburger menu    ${Locator}
+    ${name}=    Get product category text    ${Locator}
     Fail    ${name} category is missing an icon
 
 Landing page element should contain
@@ -82,7 +66,13 @@ Get product categories webelements
     @{elements}=    Get WebElements    css:ul.sidebar-category-list > li.sidebar-category-list__link
     [Return]    @{elements}
 
-Get category text from hamburger menu
+Get product categories count
+    Click hamburger menu
+    ${CATEGORY_SIZE}=    Get Element Count    css:ul.sidebar-category-list > li.sidebar-category-list__link
+    Close hamburger menu
+    [Return]    ${CATEGORY_SIZE}
+
+Get product category text
     [Arguments]    ${Locator}
     ${element}=    Execute Javascript    return arguments[0].querySelector('a > .category-list-item');    ARGUMENTS    ${Locator}
     ${text}=    Get Text    ${element}
@@ -92,13 +82,15 @@ Goto product detail
     Run Keyword And Ignore Error    Click allow cookies
     Click Element    css:#main ol li:nth-child(1) > article > a
 
-Open category and page should contain
-    [Arguments]    ${Location}    ${Text}
+Open product category
+    [Arguments]    ${Location}
     ${Pass}=    Run Keyword And Return Status    Click Element    ${Location}
-    Run Keyword If    ${Pass} == ${FALSE}    Wait Until Keyword Succeeds    10    1    Scroll and click link    ${Location}
-    Continue For Loop If    '${Text}' == 'Yritysmyynti'
+    Run Keyword Unless    ${Pass}    Wait Until Keyword Succeeds    10    1    Scroll and click link    ${Location}
+
+Product landing page should contain
+    [Arguments]    ${Text}
     ${Pass}=    Run Keyword And Return Status    Landing page element should contain    css:main > header > div    ${Text}
-    Run Keyword If    ${Pass} == ${FALSE}    Landing page element should contain    css:main#main div.row h1    ${Text}
+    Run Keyword Unless    ${Pass}    Landing page element should contain    css:main#main div.row h1    ${Text}
 
 Product detail should contain
     [Arguments]    ${SEARCH_KEYWORD}
