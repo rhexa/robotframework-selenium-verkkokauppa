@@ -78,6 +78,10 @@ Magick compare images and create difference image
     ${rc}    ${output}=    Run And Return Rc And Output    magick ${picture1} ${picture2} -metric RMSE -compare ${result_picture}
     [Return]    ${output}
 
+Get product categories webelements
+    @{elements}=    Get WebElements    css:ul.sidebar-category-list > li.sidebar-category-list__link
+    [Return]    @{elements}
+
 Get category text from hamburger menu
     [Arguments]    ${Locator}
     ${element}=    Execute Javascript    return arguments[0].querySelector('a > .category-list-item');    ARGUMENTS    ${Locator}
@@ -147,7 +151,7 @@ Take product detail image
     Run And Return Rc And Output    curl -o ${PRODUCT_DETAIL_PICTURE} ${Link}
 
 Verify each category link has icon
-    @{ELEMENTS}=    Get WebElements    css:ul.sidebar-category-list > li.sidebar-category-list__link
+    @{ELEMENTS}=    Get product categories webelements
     FOR    ${ELEMENT}    IN    @{ELEMENTS}
         ${ICON}=    Execute Javascript    return arguments[0].querySelector('a > span > svg');    ARGUMENTS    ${ELEMENT}
         Run Keyword Unless    ${ICON}    Fail on missing icon    ${ELEMENT}
