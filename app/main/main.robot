@@ -28,13 +28,13 @@ Suite Setup    Open Home Page
 # Ensure product search picture and product detail picture match
 #     Product pictures should match
 
-Can you find topics "Esittely" and "Lisätiedot" from product page
+TC_005 Can you find topics "Esittely" and "Lisätiedot" from product page
     Search by keyword    PS5
     Goto product detail
     Product detail should contain    Esittely
     Product detail should contain    Lisätiedot
 
-Ensure the add to the cart button works
+TC_006 Ensure the add to the cart button works
     Search by keyword    keyboard
     Goto product detail
     Click add to basket button
