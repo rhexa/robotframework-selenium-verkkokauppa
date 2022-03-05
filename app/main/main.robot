@@ -27,3 +27,9 @@ Ensure search feature is working (with keyword 'PS5')
 
 Ensure product search picture and product detail picture match
     Product pictures should match
+
+Can you find topics "Esittely" and "Lisätiedot" from product page
+    Search by keyword    PS5
+    Goto product detail
+    Product detail should contain    Esittely
+    Product detail should contain    Lisätiedot
