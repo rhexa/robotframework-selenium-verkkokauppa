@@ -95,7 +95,7 @@ Get product categories webelements
     [Return]    @{elements}
 
 Get product categories count
-    Click hamburger menu
+    Run Keyword And Ignore Error    Click hamburger menu
     ${CATEGORY_SIZE}=    Get Element Count    css:ul.sidebar-category-list > li.sidebar-category-list__link
     Close hamburger menu
     [Return]    ${CATEGORY_SIZE}
