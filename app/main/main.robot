@@ -53,3 +53,9 @@ TC_007 Ensure that price on the product page
 TC_008 Ensure the hamburger menu works
     Click hamburger menu
     Verify hamburger drop down menu exists
+
+TC_009 Ensure sign up button working properly
+    Click sign up button
+
+TC_010 Ensure already existing user error pops up
+    Create already existing user    dragonden2010@gmail.com    testPass1    rand    rand    987654321
