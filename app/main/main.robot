@@ -6,7 +6,7 @@ Suite Teardown    Close Browser
 *** Test Cases ***
 TC_001 Ensure all product categories have an icon
     Click hamburger menu
-    Wait Until Page Contains Element    css:ul.sidebar-category-list > li.sidebar-category-list__link
+    Wait Until Page Contains Element    css:ul.sidebar-category-list > li.sidebar-category-list__link a > span > svg
     Verify each category link has icon
     Close hamburger menu
 
