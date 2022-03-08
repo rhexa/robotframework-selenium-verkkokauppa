@@ -22,10 +22,16 @@ TC_002 Ensure all product categories have a landing page
         Product landing page should contain    ${Text}
     END
 
-Ensure search feature is working (with keyword 'PS5')
-    Search feature should works    PS5
+TC_003 Ensure search feature is working (with keyword 'PS5')
+    ${SEARCH_KEYWORD}=    Set Variable    PS5
+    Search by keyword    ${SEARCH_KEYWORD}
+    Take product search image
+    Goto product detail
+    Product detail should contain    ${SEARCH_KEYWORD}
+    Take product detail image
 
-Ensure product search picture and product detail picture match
+TC_004 Ensure product search picture and product detail picture match
+    Product pictures should exists
     Product pictures should match
 
 TC_005 Can you find topics "Esittely" and "Lisätiedot" from product page
