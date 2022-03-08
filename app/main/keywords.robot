@@ -154,6 +154,13 @@ Verify each category link has icon
         Run Keyword Unless    ${ICON}    Fail on missing icon    ${ELEMENT}
     END
 
+Verify hamburger drop down menu exists
+     Page Should Contain Element    css:nav.sidebar__navigation-container
+
+Verify price exists
+    Wait Until Page Contains Element    css:data[data-price="current"]
+    Page Should Contain Element    css:data[data-price="current"]
+
 Verify the basket modal contains word
     ${WORD}=    Set Variable    Ostoskori
     ${MODAL}=    Get WebElement    css:.dropdown-modal-container

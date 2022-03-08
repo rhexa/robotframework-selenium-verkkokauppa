@@ -38,3 +38,12 @@ TC_006 Ensure the add to the cart button works
     Search by keyword    keyboard
     Goto product detail
     Click add to basket button
+
+TC_007 Ensure that price on the product page
+    Search by keyword    computer
+    Goto product detail
+    Verify price exists
+
+TC_008 Ensure the hamburger menu works
+    Click hamburger menu
+    Verify hamburger drop down menu exists
