@@ -101,10 +101,11 @@ Product detail should contain
     [Arguments]    ${SEARCH_KEYWORD}
     Wait Until Page Contains Element    css:section.description-container__full-text > div > p
     Page Should Contain    ${SEARCH_KEYWORD}
-
-Product pictures should match
+Product pictures should exists
     File Should Exist    ${PRODUCT_SEARCH_PICTURE}
     File Should Exist    ${PRODUCT_DETAIL_PICTURE}
+    
+Product pictures should match
     ${output}=    Magick compare images and return distortion    ${PRODUCT_SEARCH_PICTURE}    ${PRODUCT_DETAIL_PICTURE}
     ${pass}=    Evaluate    ${output}*100 < 3
     Run Keyword Unless    ${pass}    Magick compare images and create difference image    ${PRODUCT_SEARCH_PICTURE}    ${PRODUCT_DETAIL_PICTURE}    ${PRODUCT_DIFFERENCES_PICTURE}
@@ -114,15 +115,6 @@ Scroll and click link
     [Arguments]    ${Location}
     Run Keyword And Ignore Error    Click Element    css:div.sidebar-scroll-buttons--bottom > svg[data-icon='arrow-down']
     Click Link    ${Location}
-
-Search feature should works
-    [Arguments]    ${SEARCH_KEYWORD}
-    Go To    ${URL}
-    Search by keyword    ${SEARCH_KEYWORD}
-    Take product search image
-    Goto product detail
-    Product detail should contain    ${SEARCH_KEYWORD}
-    Take product detail image
 
 Search by keyword
     [Arguments]    ${SEARCH_KEYWORD}
