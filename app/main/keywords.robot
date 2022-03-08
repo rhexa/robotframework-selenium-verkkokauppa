@@ -47,6 +47,29 @@ Close hamburger menu
     Wait Until Page Contains Element   css:div#sidebar-header-main > label > svg[data-icon='times']
     Click Element    css:div#sidebar-header-main > label > svg[data-icon='times']
 
+Click sign up button
+    Wait Until Page Contains Element    css:#account
+    Mouse Over    css:#account
+    Wait Until Page Contains Element    css:div[class="dropdown-modal-new-account"] > a[href="/fi/account/create?next=%2Ffi%2Faccount%2Fcustomer"]
+    Click Element    css:div[class="dropdown-modal-new-account"] > a[href="/fi/account/create?next=%2Ffi%2Faccount%2Fcustomer"]
+
+Create new user
+    [Arguments]    ${EMAIL}    ${PASSWORD}    ${FIRSTNAME}    ${LASTNAME}    ${PHONE_NUMBER}
+    Click sign up button
+    Input Text    css:input[type='email'][name='email']    ${EMAIL}
+    Input Password    css:input[type='password'][name='password']    ${PASSWORD}
+    Input Text    css:input[type='text'][name='firstname']    ${FIRSTNAME}
+    Input Text    css:input[type='text'][name='lastname']    ${LASTNAME}
+    Input Text    css:input[type='tel'][name='phoneMobile']    ${PHONE_NUMBER}
+    Click Element    css:div[class="sc-1n4x7vk-4 irIOTi"]
+    Click Button    css:#create-account-button
+
+Create already existing user
+    [Arguments]    ${EMAIL}    ${PASSWORD}    ${FIRSTNAME}    ${LASTNAME}    ${PHONE_NUMBER}
+    Create new user    ${EMAIL}    ${PASSWORD}    ${FIRSTNAME}    ${LASTNAME}    ${PHONE_NUMBER}
+    Wait Until Page Contains Element    css:li[class="sc-64420k-1 lcmaaI"]
+    Element Should Contain    css:li[class="sc-64420k-1 lcmaaI"]    Sähköpostiosoitteella on jo luotu asiakastili.
+
 Fail on missing icon
     [Arguments]    ${Locator}
     ${name}=    Get product category text    ${Locator}
@@ -72,7 +95,7 @@ Get product categories webelements
     [Return]    @{elements}
 
 Get product categories count
-    Click hamburger menu
+    Run Keyword And Ignore Error    Click hamburger menu
     ${CATEGORY_SIZE}=    Get Element Count    css:ul.sidebar-category-list > li.sidebar-category-list__link
     Close hamburger menu
     [Return]    ${CATEGORY_SIZE}
@@ -82,6 +105,9 @@ Get product category text
     ${element}=    Execute Javascript    return arguments[0].querySelector('a > .category-list-item');    ARGUMENTS    ${Locator}
     ${text}=    Get Text    ${element}
     [Return]    ${text}
+
+Goto homepage
+    Go To    ${URL}
 
 Goto product detail
     Run Keyword And Ignore Error    Click allow cookies
