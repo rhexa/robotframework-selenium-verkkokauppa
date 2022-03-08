@@ -38,6 +38,11 @@ Click hamburger menu
     Wait Until Page Contains Element   css:div.header label > svg[data-icon='bars']
     Click Element    css:div.header label > svg[data-icon='bars']
 
+Click add to basket button
+    Wait Until Page Contains Element   css:.shipment-details button
+    @{BUTTONS}=    Get WebElements    css:.shipment-details button
+    Click Element    ${BUTTONS}[0]
+
 Close hamburger menu
     Wait Until Page Contains Element   css:div#sidebar-header-main > label > svg[data-icon='times']
     Click Element    css:div#sidebar-header-main > label > svg[data-icon='times']
@@ -148,3 +153,8 @@ Verify each category link has icon
         ${ICON}=    Execute Javascript    return arguments[0].querySelector('a > span > svg');    ARGUMENTS    ${ELEMENT}
         Run Keyword Unless    ${ICON}    Fail on missing icon    ${ELEMENT}
     END
+
+Verify the basket modal contains word
+    ${WORD}=    Set Variable    Ostoskori
+    ${MODAL}=    Get WebElement    css:.dropdown-modal-container
+    Element Should Contain    ${MODAL}    ${WORD}
