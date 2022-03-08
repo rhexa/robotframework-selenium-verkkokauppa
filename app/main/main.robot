@@ -24,6 +24,7 @@ TC_002 Ensure all product categories have a landing page
 
 TC_003 Ensure search feature is working (with keyword 'PS5')
     ${SEARCH_KEYWORD}=    Set Variable    PS5
+    Goto homepage
     Search by keyword    ${SEARCH_KEYWORD}
     Take product search image
     Goto product detail
@@ -46,7 +47,7 @@ TC_006 Ensure the add to the cart button works
     Click add to basket button
 
 TC_007 Ensure that price on the product page
-    Search by keyword    computer
+    Search by keyword    keyboard
     Goto product detail
     Verify price exists
 
@@ -55,6 +56,7 @@ TC_008 Ensure the hamburger menu works
     Verify hamburger drop down menu exists
 
 TC_009 Ensure sign up button working properly
+    Goto homepage
     Click sign up button
 
 TC_010 Ensure already existing user error pops up

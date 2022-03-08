@@ -106,6 +106,9 @@ Get product category text
     ${text}=    Get Text    ${element}
     [Return]    ${text}
 
+Goto homepage
+    Go To    ${URL}
+
 Goto product detail
     Run Keyword And Ignore Error    Click allow cookies
     Click Element    css:#main ol li:nth-child(1) > article > a
