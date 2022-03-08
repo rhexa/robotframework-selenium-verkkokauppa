@@ -47,6 +47,7 @@ TC_006 Ensure the add to the cart button works
     Click add to basket button
 
 TC_007 Ensure that price on the product page
+    Goto homepage
     Search by keyword    keyboard
     Goto product detail
     Verify price exists
