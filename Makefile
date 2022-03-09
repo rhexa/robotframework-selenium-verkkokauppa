@@ -9,4 +9,4 @@ docker-run:
 
 docker-run-test:
 	docker run --rm -v "${PWD}"/app:/app:ro -v "${PWD}"/temp:/temp \
-	-v "${PWD}"/entrypoint.sh:/entrypoint.sh:ro --entrypoint ./entrypoint.sh "${TAG}"
+	-v "${PWD}"/entrypoint.sh:/entrypoint.sh:ro "${TAG}" entrypoint.sh 
